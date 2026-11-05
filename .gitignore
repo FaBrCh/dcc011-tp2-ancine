@@ -1,0 +1,6 @@
+dados/obras/
+tp2.db
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
