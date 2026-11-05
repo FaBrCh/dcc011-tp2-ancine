@@ -2,6 +2,8 @@
 
 Trabalho Prático 2 de DCC011 Introdução a Banco de Dados (turma TB, UFMG, 2026/2). Usa os dados abertos da ANCINE sobre obras audiovisuais, empresas do setor e salas de exibição. O banco é modelado e carregado no SQLite, consultado em SQL e visualizado num app Streamlit.
 
+**App online:** https://tp2-cinema-ancine.streamlit.app
+
 ## Prazos
 
 | Quando | O quê |
@@ -34,11 +36,15 @@ jupyter nbconvert --to notebook --execute --inplace tp2.ipynb
 streamlit run app.py
 ```
 
-O notebook cria o banco `tp2.db` na pasta, e o app lê esse banco. Também dá para abrir o `tp2.ipynb` no Jupyter ou no VS Code e rodar célula por célula.
+O notebook cria o banco `tp2.db` na pasta, e o app lê esse banco. Se o `tp2.db` não existir, o próprio app executa o notebook para criá-lo na primeira visita (leva cerca de um minuto). Também dá para abrir o `tp2.ipynb` no Jupyter ou no VS Code e rodar célula por célula.
 
 Para rodar os testes: `python -m unittest test_consultas`.
 
 Para gerar o PDF: `playwright install chromium` uma vez, depois `python exportar_pdf.py`.
+
+## App online
+
+O app roda no Streamlit Community Cloud a partir da branch `main`: todo push na `main` atualiza o app. O `packages.txt` instala o Graphviz que o notebook usa ao montar o banco. Sem visitas por 12 horas, o app hiberna; quem abrir o link clica em "Yes, get this app back up!" e espera um ou dois minutos.
 
 ## Sobre os dados
 
@@ -57,5 +63,6 @@ O `.ipynb` dá conflito fácil no Git. Antes de editar o notebook, avise no grup
 - [ ] Seção 2: nome e matrícula de todos os membros
 - [ ] Seção 7: autoavaliação. Cada membro descreve o que realmente fez
 - [ ] Cada membro revisar a parte que vai apresentar e ajustar o que achar melhor
+- [ ] Citar o link do app na seção 6.6 do notebook
 - [ ] Slides da apresentação
 - [ ] Gerar o PDF final e enviar o .zip no Moodle até 18/11, 23:59
