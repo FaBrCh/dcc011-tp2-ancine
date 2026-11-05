@@ -1,14 +1,16 @@
-import sys
 from pathlib import Path
 
 import altair as alt
+import nbformat
 import pandas as pd
 import streamlit as st
+from nbclient import NotebookClient
 
 import consultas
 
 PASTA = Path(__file__).resolve().parent
-BANCO = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else PASTA / "tp2.db"
+BANCO = PASTA / "tp2.db"
+NOTEBOOK = PASTA / "tp2.ipynb"
 
 AZUL, LARANJA, VERDE, CINZA = "#2a78d6", "#eb6834", "#1baf7a", "#b5b3ad"
 TINTA, TINTA_2, GRADE, FAIXA = "#0b0b0b", "#52514e", "#e4e3df", "#f0efec"
@@ -17,6 +19,18 @@ SEGMENTOS_FOMENTO = {"Salas de exibição": True, "Demais segmentos": False, "To
 MESES = ("janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro",
          "novembro", "dezembro")
 ANOS_COMPLETOS = "anos completos"
+
+
+@st.cache_resource(show_spinner="Criando o banco a partir do notebook tp2.ipynb. Só acontece na primeira visita "
+                                "e leva cerca de um minuto.")
+def montar_banco():
+    if BANCO.exists():
+        return
+    try:
+        NotebookClient(nbformat.read(NOTEBOOK, as_version=4), resources={"metadata": {"path": str(PASTA)}}).execute()
+    except BaseException:
+        BANCO.unlink(missing_ok=True)
+        raise
 
 
 @st.cache_data(show_spinner=False, max_entries=64)
@@ -267,10 +281,7 @@ st.set_page_config(page_title="TP2: cinema brasileiro em dados", layout="wide")
 st.title("Cinema brasileiro em dados")
 st.caption("DCC011 Introdução a Banco de Dados, UFMG, 2026/2. Trabalho Prático 2: dados abertos da ANCINE.")
 
-if not BANCO.exists():
-    st.error(f"O banco `{BANCO}` não foi encontrado. Execute o notebook `tp2.ipynb` primeiro: "
-             "ele baixa os dados da ANCINE e cria o `tp2.db` na pasta do app.")
-    st.stop()
+montar_banco()
 
 abas = st.tabs(["Início", "I. Evolução e pandemia", "II. Concentração da produção", "III. Parque exibidor",
                 "IV. Fomento indireto"], on_change="rerun", key="aba")
